@@ -1,5 +1,7 @@
 # Repository of Software Architecture Artefacts
 
+Alunos: Camila de Lima Martins, Matheus Alves e Vanderley Sousa
+
 This repository groups artefacts used on software architecture module. This module is delivered to undergraduate students of computer science-related courses at Universidade Tecnológica Federal do Paraná, Cornélio Procópio, Brazil.  
 
 As of this date, [Dr. Gabriel Costa Silva](http://gabrielcosta.utfpr.site) is responsible for delivering the module.
