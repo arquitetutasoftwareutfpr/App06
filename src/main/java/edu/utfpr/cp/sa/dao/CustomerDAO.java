@@ -42,7 +42,7 @@ public class CustomerDAO {
         return false;
     }
 
-    public Set<Customer> read() {
+    public Set<Customer> read() throws Exception {
         HashSet<Customer> customers = new HashSet<>();
 
         try (Connection conn = DriverManager.getConnection(URL)) {
@@ -77,7 +77,7 @@ public class CustomerDAO {
         return customers;
     }
 
-    public boolean update(Customer customer) {
+    public boolean update(Customer customer) throws Exception {
 
         if (this.read().stream().map(Customer::getName).anyMatch(e -> e.equals(customer.getName()))) {
             throw new IllegalArgumentException("There already is a customer with this name!");

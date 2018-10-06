@@ -40,7 +40,7 @@ public class CountryDAO {
         return false;
     }
 
-    public Set<Country> read() {
+    public Set<Country> read() throws Exception {
         HashSet<Country> countries = new HashSet<>();
 
         try (Connection conn = DriverManager.getConnection(URL)) {
@@ -69,7 +69,7 @@ public class CountryDAO {
         return countries;
     }
 
-    public boolean update(Country country) {
+    public boolean update(Country country) throws Exception {
         
         if (this.read().stream().map(Country::getName).anyMatch(e -> e.equals(country.getName()))) {
             throw new IllegalArgumentException("There already is a country with this name!");
