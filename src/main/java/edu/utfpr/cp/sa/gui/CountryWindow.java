@@ -1,5 +1,6 @@
 package edu.utfpr.cp.sa.gui;
 
+import edu.utfpr.cp.sa.business.CountryBusiness;
 import edu.utfpr.cp.sa.dao.CountryDAO;
 import java.awt.BorderLayout;
 
@@ -14,6 +15,8 @@ import edu.utfpr.cp.sa.entity.Country;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -77,8 +80,8 @@ public class CountryWindow extends JFrame {
     private JTextField name;
     private JTextField acronym;
     private JTextField phoneDigits;
-    private JTable table;
-    private CountryDAO countryDAO;
+    private JTable table; 
+    private CountryBusiness cBusiness;
     
     
     private void cleanPanelData() {
@@ -99,14 +102,26 @@ public class CountryWindow extends JFrame {
 
     private void create() {
         Country c = new Country();
-        c.setName(name.getText());
-        c.setAcronym(acronym.getText());
+        try {
+            c.setName(name.getText());
+        } catch (Exception ex) {
+             JOptionPane.showMessageDialog(this, ex.getMessage());
+            return;
+        }
+        
+        try {
+            c.setAcronym(acronym.getText());
+        } catch (Exception ex) {
+             JOptionPane.showMessageDialog(this, ex.getMessage());
+            return;
+        }
+        
         c.setPhoneDigits(new Integer(phoneDigits.getText()));
 
         try {
-            countryDAO.create(c);
+            cBusiness.create(c);
             JOptionPane.showMessageDialog(this, "Country successfully added!");
-            this.table.setModel(new CountryTableModel(countryDAO.read()));
+            this.table.setModel(new CountryTableModel(cBusiness.read()));
             
             this.cleanPanelData();
             
@@ -119,16 +134,16 @@ public class CountryWindow extends JFrame {
         
         try {
             
-            Country c = countryDAO.read().stream().filter(e -> e.getId().equals(new Long(id.getText()))).findAny().get();
+            Country c = cBusiness.read().stream().filter(e -> e.getId().equals(new Long(id.getText()))).findAny().get();
             
             c.setName(name.getText());
             c.setAcronym(acronym.getText());
             c.setPhoneDigits(new Integer(phoneDigits.getText()));
 
-            countryDAO.update(c);
+            cBusiness.update(c);
             JOptionPane.showMessageDialog(this, "Country successfully updated!");
             this.cleanPanelData();
-            this.table.setModel(new CountryTableModel(countryDAO.read()));
+            this.table.setModel(new CountryTableModel(cBusiness.read()));
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
@@ -138,18 +153,18 @@ public class CountryWindow extends JFrame {
     private void delete() {
      
         try {
-            countryDAO.delete(new Long (id.getText()));
+            cBusiness.delete(new Long (id.getText()));
             JOptionPane.showMessageDialog(this, "Country successfully deleted!");
             this.cleanPanelData();
-            this.table.setModel(new CountryTableModel(countryDAO.read()));
+            this.table.setModel(new CountryTableModel(cBusiness.read()));
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
 
-    public CountryWindow(CountryDAO countryDAO) {
-        this.countryDAO = countryDAO;
+    public CountryWindow(CountryBusiness countryBusiness) {
+        this.cBusiness = countryBusiness;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         contentPane = new JPanel();
@@ -161,7 +176,7 @@ public class CountryWindow extends JFrame {
         contentPane.add(panelTable, BorderLayout.CENTER);
 
         table = new JTable();
-        table.setModel(new CountryTableModel(countryDAO.read()));
+        table.setModel(new CountryTableModel(cBusiness.read()));
         panelTable.setViewportView(table);
         table.getSelectionModel().addListSelectionListener(e -> this.updatePanelData());
 
