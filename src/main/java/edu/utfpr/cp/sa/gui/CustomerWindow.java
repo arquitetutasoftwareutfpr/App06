@@ -1,8 +1,7 @@
 package edu.utfpr.cp.sa.gui;
 
+import edu.utfpr.cp.sa.business.CountryBusiness;
 import edu.utfpr.cp.sa.business.CustomerBusiness;
-import edu.utfpr.cp.sa.dao.CountryDAO;
-import edu.utfpr.cp.sa.dao.CustomerDAO;
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
@@ -91,9 +90,8 @@ public class CustomerWindow extends JFrame {
     private JTable table;
 
     private CustomerBusiness business;
+    private CountryBusiness cBusiness;
     
-    private CountryDAO countryDAO;
-
     private void cleanPanelData() {
         id.setText("");
         name.setText("");
@@ -113,7 +111,7 @@ public class CustomerWindow extends JFrame {
 
     private void create() {
         Customer c = new Customer();
-        Country selected = countryDAO.read().stream().filter(e -> e.getName().equalsIgnoreCase((String) country.getSelectedItem())).findFirst().get();
+        Country selected = cBusiness.read().stream().filter(e -> e.getName().equalsIgnoreCase((String) country.getSelectedItem())).findFirst().get();
 
         try {
             c.setCountry(selected);
@@ -158,7 +156,7 @@ public class CustomerWindow extends JFrame {
 
     private void update() {
         Customer c = business.read().stream().filter(e -> e.getId().equals(new Long(id.getText()))).findAny().get();
-        Country selected = countryDAO.read().stream().filter(e -> e.getName().equalsIgnoreCase((String) country.getSelectedItem())).findFirst().get();
+        Country selected = cBusiness.read().stream().filter(e -> e.getName().equalsIgnoreCase((String) country.getSelectedItem())).findFirst().get();
 
         try {
             c.setCountry(selected);
@@ -209,16 +207,16 @@ public class CustomerWindow extends JFrame {
 
                 this.cleanPanelData();
 
-                this.table.setModel(new CountryTableModel(countryDAO.read()));
+                this.table.setModel(new CountryTableModel(cBusiness.read()));
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
 
-    public CustomerWindow(CustomerDAO customerDAO, CountryDAO countryDAO) {
-        this.business = new CustomerBusiness();
-        this.countryDAO = countryDAO;
+    public CustomerWindow(CustomerBusiness customerBusiness, CountryBusiness countryBusiness) {
+        this.business = customerBusiness;
+        this.cBusiness = countryBusiness;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         contentPane = new JPanel();
@@ -230,7 +228,7 @@ public class CustomerWindow extends JFrame {
         contentPane.add(panelTable, BorderLayout.CENTER);
 
         table = new JTable();
-        table.setModel(new CustomerTableModel(customerDAO.read()));
+        table.setModel(new CustomerTableModel(business.read()));
         panelTable.setViewportView(table);
         table.getSelectionModel().addListSelectionListener(e -> this.updatePanelData());
 
@@ -270,7 +268,7 @@ public class CustomerWindow extends JFrame {
         JLabel lblCountry = new JLabel("Country");
         panelInclusion.add(lblCountry);
 
-        country = new JComboBox<>(countryDAO.read().stream().map(Country::getName).toArray(String[]::new));
+        country = new JComboBox<>(cBusiness.read().stream().map(Country::getName).toArray(String[]::new));
         panelInclusion.add(country);
 
         JButton btnCreate = new JButton("Create");
