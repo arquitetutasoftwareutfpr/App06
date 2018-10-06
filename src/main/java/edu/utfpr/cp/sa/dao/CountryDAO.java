@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CountryDAO {
 
@@ -40,7 +42,7 @@ public class CountryDAO {
         return false;
     }
 
-    public Set<Country> read() throws Exception {
+    public Set<Country> read() {
         HashSet<Country> countries = new HashSet<>();
 
         try (Connection conn = DriverManager.getConnection(URL)) {
@@ -55,8 +57,12 @@ public class CountryDAO {
             while (result.next()) {
                 currentCountry = new Country();
                 currentCountry.setId(result.getLong("id"));
-                currentCountry.setName(result.getString("name"));
-                currentCountry.setAcronym(result.getString("acronym"));
+                try {
+                    currentCountry.setName(result.getString("name"));
+                    currentCountry.setAcronym(result.getString("acronym"));
+                } catch (Exception ex) {
+                    Logger.getLogger(CountryDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 currentCountry.setPhoneDigits(result.getInt("phoneDigits"));
 
                 countries.add(currentCountry);

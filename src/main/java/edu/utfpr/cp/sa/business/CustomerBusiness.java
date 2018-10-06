@@ -24,7 +24,7 @@ public class CustomerBusiness {
         }
         return true;
     }
-    
+
     public boolean checkName(String name) {
         return name.length() < 5;
     }
@@ -40,7 +40,7 @@ public class CustomerBusiness {
         return true;
     }
 
-    public double calcCreditLimitByAge(int age){
+    public double calcCreditLimitByAge(int age) {
         if (age <= 18) {
             return 100.0;
         } else if (age <= 35) {
@@ -49,11 +49,11 @@ public class CustomerBusiness {
             return 500.0;
         }
     }
-    
-    public double calcCreditLimitByCountry(String countryName){
+
+    public double calcCreditLimitByCountry(String countryName) {
         return countryName.equalsIgnoreCase("Brazil") ? 100.0 : 0.0;
     }
-    
+
     public Set<Customer> read() {
         return customerDAO.read();
     }

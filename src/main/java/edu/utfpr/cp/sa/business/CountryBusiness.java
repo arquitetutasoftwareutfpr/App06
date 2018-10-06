@@ -6,7 +6,7 @@
 package edu.utfpr.cp.sa.business;
 
 import edu.utfpr.cp.sa.dao.CountryDAO;
-import  edu.utfpr.cp.sa.entity.Country;
+import edu.utfpr.cp.sa.entity.Country;
 import java.util.Set;
 
 /**
@@ -14,38 +14,37 @@ import java.util.Set;
  * @author vande
  */
 public class CountryBusiness {
-    
-     public boolean checkName(String name) throws Exception{
-        if(name == null){
+
+    private CountryDAO countryDAO = new CountryDAO();
+
+    public boolean checkName(String name) throws Exception {
+        if (name == null) {
             throw new Exception("Name not informed!");
         }
         return true;
     }
-     
-    public boolean checkAcronym(String acronym) throws Exception{
-        if(acronym == null){
+
+    public boolean checkAcronym(String acronym) throws Exception {
+        if (acronym == null) {
             throw new Exception("Acronym not informed!");
         }
         return true;
     }
-        
-    private CountryDAO countryDAO = new CountryDAO();
-    
-    public Set<Country> read() throws Exception{
+
+    public Set<Country> read() {
         return countryDAO.read();
     }
-    
-    public boolean create(Country c)throws Exception{
+
+    public boolean create(Country c) throws Exception {
         return countryDAO.create(c);
     }
-    
-    
-    public boolean update(Country c)throws Exception{
+
+    public boolean update(Country c) throws Exception {
         return countryDAO.update(c);
     }
-    
-    public boolean delete(Long id)throws Exception{
+
+    public boolean delete(Long id) throws Exception {
         return countryDAO.delete(id);
-    } 
-    
+    }
+
 }

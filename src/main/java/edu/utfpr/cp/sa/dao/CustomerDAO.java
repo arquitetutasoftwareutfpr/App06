@@ -42,7 +42,7 @@ public class CustomerDAO {
         return false;
     }
 
-    public Set<Customer> read() throws Exception {
+    public Set<Customer> read() {
         HashSet<Customer> customers = new HashSet<>();
 
         try (Connection conn = DriverManager.getConnection(URL)) {

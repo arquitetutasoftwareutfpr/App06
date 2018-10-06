@@ -81,7 +81,7 @@ public class CountryWindow extends JFrame {
     private JTextField acronym;
     private JTextField phoneDigits;
     private JTable table; 
-    private CountryBusiness cBusiness;
+    private CountryBusiness business;
     
     
     private void cleanPanelData() {
@@ -119,9 +119,9 @@ public class CountryWindow extends JFrame {
         c.setPhoneDigits(new Integer(phoneDigits.getText()));
 
         try {
-            cBusiness.create(c);
+            business.create(c);
             JOptionPane.showMessageDialog(this, "Country successfully added!");
-            this.table.setModel(new CountryTableModel(cBusiness.read()));
+            this.table.setModel(new CountryTableModel(business.read()));
             
             this.cleanPanelData();
             
@@ -134,16 +134,16 @@ public class CountryWindow extends JFrame {
         
         try {
             
-            Country c = cBusiness.read().stream().filter(e -> e.getId().equals(new Long(id.getText()))).findAny().get();
+            Country c = business.read().stream().filter(e -> e.getId().equals(new Long(id.getText()))).findAny().get();
             
             c.setName(name.getText());
             c.setAcronym(acronym.getText());
             c.setPhoneDigits(new Integer(phoneDigits.getText()));
 
-            cBusiness.update(c);
+            business.update(c);
             JOptionPane.showMessageDialog(this, "Country successfully updated!");
             this.cleanPanelData();
-            this.table.setModel(new CountryTableModel(cBusiness.read()));
+            this.table.setModel(new CountryTableModel(business.read()));
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
@@ -153,10 +153,10 @@ public class CountryWindow extends JFrame {
     private void delete() {
      
         try {
-            cBusiness.delete(new Long (id.getText()));
+            business.delete(new Long (id.getText()));
             JOptionPane.showMessageDialog(this, "Country successfully deleted!");
             this.cleanPanelData();
-            this.table.setModel(new CountryTableModel(cBusiness.read()));
+            this.table.setModel(new CountryTableModel(business.read()));
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
@@ -164,7 +164,7 @@ public class CountryWindow extends JFrame {
     }
 
     public CountryWindow(CountryBusiness countryBusiness) {
-        this.cBusiness = countryBusiness;
+        this.business = countryBusiness;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         contentPane = new JPanel();
@@ -176,7 +176,7 @@ public class CountryWindow extends JFrame {
         contentPane.add(panelTable, BorderLayout.CENTER);
 
         table = new JTable();
-        table.setModel(new CountryTableModel(cBusiness.read()));
+        table.setModel(new CountryTableModel(business.read()));
         panelTable.setViewportView(table);
         table.getSelectionModel().addListSelectionListener(e -> this.updatePanelData());
 
