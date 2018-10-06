@@ -1,5 +1,6 @@
 package edu.utfpr.cp.sa.gui;
 
+import edu.utfpr.cp.sa.business.CustomerBusiness;
 import edu.utfpr.cp.sa.dao.CountryDAO;
 import edu.utfpr.cp.sa.dao.CustomerDAO;
 import java.awt.BorderLayout;
@@ -89,7 +90,8 @@ public class CustomerWindow extends JFrame {
     private JComboBox<String> country;
     private JTable table;
 
-    private CustomerDAO customerDAO;
+    private CustomerBusiness business;
+    
     private CountryDAO countryDAO;
 
     private void cleanPanelData() {
@@ -143,11 +145,11 @@ public class CustomerWindow extends JFrame {
         }
 
         try {
-            customerDAO.create(c);
-            JOptionPane.showMessageDialog(this, "Customer successfully added!");
-            this.cleanPanelData();
-            this.table.setModel(new CustomerTableModel(customerDAO.read()));
-
+            if (business.create(c)) {
+                JOptionPane.showMessageDialog(this, "Customer successfully added!");
+                this.cleanPanelData();
+                this.table.setModel(new CustomerTableModel(business.read()));
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
@@ -155,7 +157,7 @@ public class CustomerWindow extends JFrame {
     }
 
     private void update() {
-        Customer c = customerDAO.read().stream().filter(e -> e.getId().equals(new Long(id.getText()))).findAny().get();
+        Customer c = business.read().stream().filter(e -> e.getId().equals(new Long(id.getText()))).findAny().get();
         Country selected = countryDAO.read().stream().filter(e -> e.getName().equalsIgnoreCase((String) country.getSelectedItem())).findFirst().get();
 
         try {
@@ -188,11 +190,11 @@ public class CustomerWindow extends JFrame {
         }
 
         try {
-            customerDAO.update(c);
-            JOptionPane.showMessageDialog(this, "Customer successfully updated!");
-            this.cleanPanelData();
-            this.table.setModel(new CustomerTableModel(customerDAO.read()));
-
+            if (business.update(c)) {
+                JOptionPane.showMessageDialog(this, "Customer successfully updated!");
+                this.cleanPanelData();
+                this.table.setModel(new CustomerTableModel(business.read()));
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
@@ -202,21 +204,20 @@ public class CustomerWindow extends JFrame {
     private void delete() {
 
         try {
-            customerDAO.delete(new Long(id.getText()));
-            
-            JOptionPane.showMessageDialog(this, "Customer successfully deleted!");
-            
-            this.cleanPanelData();
-            
-            this.table.setModel(new CountryTableModel(countryDAO.read()));
+            if (business.delete(new Long(id.getText()))) {
+                JOptionPane.showMessageDialog(this, "Customer successfully deleted!");
 
+                this.cleanPanelData();
+
+                this.table.setModel(new CountryTableModel(countryDAO.read()));
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
 
     public CustomerWindow(CustomerDAO customerDAO, CountryDAO countryDAO) {
-        this.customerDAO = customerDAO;
+        this.business = new CustomerBusiness();
         this.countryDAO = countryDAO;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
